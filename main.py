@@ -1,6 +1,7 @@
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 
+
 im = Image.open('test3.jpg')
 n_coordinat = im._getexif()[34853][2]
 e_coordinat = im._getexif()[34853][4]
