@@ -8,9 +8,7 @@ class RetrieverGPS:
         pass
 
     def div_str(self, a, b):
-        dividend = int(a)
-        divider = int(b)
-        result = str(dividend/divider)
+        result = str(int(a)/int(b))
         result = result if int(result.split(
             '.')[1]) > 0 else result.split('.')[0]
         return result
@@ -20,10 +18,11 @@ class RetrieverGPS:
         latitude = 2
         longitude = 4
         pos_cord_dir_one = 1
-        pos_cord_dir_two = 3        
-        
+        pos_cord_dir_two = 3
+
         try:
             image = Image.open(path)
+            print(image._getexif())
             n_coordinat = image._getexif()[gps_data_exif_IOS][latitude]
             e_coordinat = image._getexif()[gps_data_exif_IOS][longitude]
 
