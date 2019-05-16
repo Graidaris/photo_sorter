@@ -7,7 +7,7 @@ class RetrieverPhotoInformation:
     def __init__(self):
         pass
 
-    def div_str(self, a, b):
+    def __div_str(self, a, b):
         result = str(int(a)/int(b))
         result = result if int(result.split(
             '.')[1]) > 0 else result.split('.')[0]
@@ -42,7 +42,7 @@ class RetrieverPhotoInformation:
         except Exception as e:
             return None
 
-        cor_n = ' '.join(self.div_str(c, div) for (c, div) in n_coordinat)
-        cor_e = ' '.join(self.div_str(c, div) for (c, div) in e_coordinat)
+        cor_n = ' '.join(self.__div_str(c, div) for (c, div) in n_coordinat)
+        cor_e = ' '.join(self.__div_str(c, div) for (c, div) in e_coordinat)
 
         return (cor_n, cardinal_direction[0], cor_e, cardinal_direction[1])
