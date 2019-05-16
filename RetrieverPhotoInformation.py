@@ -46,3 +46,17 @@ class RetrieverPhotoInformation:
         cor_e = ' '.join(self.__div_str(c, div) for (c, div) in e_coordinat)
 
         return (cor_n, cardinal_direction[0], cor_e, cardinal_direction[1])
+
+    def extract_date(self, path):
+        date_data_exif = 36867
+        image = Image.open(path)
+        date, time = image._getexif()[date_data_exif].split(' ')
+        date, time = date.split(':'), time.split(':')
+        return {
+            'year': date[0],
+            'month': date[1],
+            'day': date[2],
+            'hour': time[0],
+            'minute': time[1],
+            'second': time[2]
+                }
