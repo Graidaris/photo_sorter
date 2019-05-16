@@ -2,7 +2,7 @@ from os.path import isfile
 from os.path import join as path_join
 from os import listdir
 
-from RetrieverGPS import RetrieverGPS
+from RetrieverPhotoInformation import RetrieverPhotoInformation
 
 path = 'OneDrive-2019-05-15'
 

@@ -22,7 +22,7 @@ class RetrieverPhotoInformation:
 
         try:
             image = Image.open(path)
-            print(image._getexif())
+            #print(image._getexif())
             n_coordinat = image._getexif()[gps_data_exif_IOS][latitude]
             e_coordinat = image._getexif()[gps_data_exif_IOS][longitude]
 
