@@ -2,7 +2,7 @@ from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
 
 
-class RetrieverGPS:
+class RetrieverPhotoInformation:
 
     def __init__(self):
         pass

@@ -6,7 +6,7 @@ from RetrieverGPS import RetrieverGPS
 
 path = 'OneDrive-2019-05-15'
 
-retriver_inform = RetrieverGPS()
+retriver_inform = RetrieverPhotoInformation()
 
 count = 0
 count_correct_processed = 0
