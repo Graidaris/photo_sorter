@@ -1,12 +1,14 @@
-from os.path import isfile
-from os.path import join as path_join
-from os import listdir
+import os
+import sys
 
-from RetrieverPhotoInformation import RetrieverPhotoInformation
+from retriever_photo_information import RetrieverPhotoInformation
 
-path = 'OneDrive-2019-05-15'
+try:
+    path = sys.argv[1]
+except IndexError as e:
+    path = '.'
 
-retriver_inform = RetrieverPhotoInformation()
+retriever_inform = RetrieverPhotoInformation()
 
 count = 0
 count_correct_processed = 0
@@ -14,11 +16,10 @@ count_error_processed = 0
 count_not_correct_format = 0
 
 with open('coordinats.txt', 'w') as file_to_write:
-
-    for f in listdir(path):
+    for f in os.listdir(path):
         count += 1
         if f.split('.')[-1] == 'jpg':
-            cord = retriver_inform.extract_coord(path_join(path, f))
+            cord = retriever_inform.extract_coord(os.path.join(path, f))
             if cord is not None:
                 count_correct_processed += 1
                 file_to_write.write(str(cord) + '\n')
@@ -27,8 +28,7 @@ with open('coordinats.txt', 'w') as file_to_write:
         else:
             count_not_correct_format += 1
 
-
-print('Complite!\n'
+print('Complete!\n'
       f'All file is processed: {count}\n'
       f"Files has benn processed correct: {count_correct_processed}\n"
       f"Files has been processed with error: {count_error_processed}\n"

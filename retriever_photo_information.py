@@ -1,5 +1,4 @@
 from PIL import Image
-from PIL.ExifTags import TAGS, GPSTAGS
 
 
 class RetrieverPhotoInformation:
@@ -8,7 +7,7 @@ class RetrieverPhotoInformation:
         pass
 
     def __div_str(self, a, b):
-        result = str(int(a)/int(b))
+        result = str(int(a) / int(b))
         result = result if int(result.split(
             '.')[1]) > 0 else result.split('.')[0]
         return result
@@ -22,7 +21,6 @@ class RetrieverPhotoInformation:
 
         try:
             image = Image.open(path)
-            #print(image._getexif())
             n_coordinat = image._getexif()[gps_data_exif_IOS][latitude]
             e_coordinat = image._getexif()[gps_data_exif_IOS][longitude]
 
@@ -59,4 +57,4 @@ class RetrieverPhotoInformation:
             'hour': time[0],
             'minute': time[1],
             'second': time[2]
-                }
+        }
