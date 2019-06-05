@@ -51,6 +51,7 @@ with open('coordinats.txt', 'w') as file_to_write:
         else:
             count_not_correct_format += 1
 
+        """free trial of the service, I can use API one time per second"""
         time.sleep(1.1)
 
 print('Complete!\n'
