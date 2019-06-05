@@ -7,6 +7,7 @@ import PIL.ExifTags
 class RetrieverPhotoInformation:
 
     def __init__(self, name_file):
+        self.photo_name = name_file
         img = PIL.Image.open(name_file)
         self.exif = {
             PIL.ExifTags.TAGS[k]: v
@@ -30,7 +31,11 @@ class RetrieverPhotoInformation:
         pos_cord_dir_lat = 1
         pos_cord_dir_lon = 3
 
-        gps_data = self.exif['GPSInfo']
+        try:
+            gps_data = self.exif['GPSInfo']
+        except KeyError:
+            print(self.photo_name, "hasn't GPS information")
+            return None
 
         cord = {
             'lat': {'val': self.__transform_gps_data(gps_data[latitude]),
@@ -50,7 +55,7 @@ class RetrieverPhotoInformation:
             'lon': lon
                 }
 
-    def extract_date(self):
+    def get_date(self):
         date, time = self.exif['DateTimeOriginal'].split(' ')
         date, time = date.split(':'), time.split(':')
         return {
