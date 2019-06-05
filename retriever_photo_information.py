@@ -1,67 +1,57 @@
 #!/usr/bin/python3
 
-from PIL import Image
+import PIL.Image
+import PIL.ExifTags
 
 
 class RetrieverPhotoInformation:
 
-    def __init__(self):
-        pass
+    def __init__(self, name_file):
+        img = PIL.Image.open(name_file)
+        self.exif = {
+            PIL.ExifTags.TAGS[k]: v
+            for k, v in img._getexif().items()
+            if k in PIL.ExifTags.TAGS
+        }
 
-    def __div_str(self, a, b):
-        result = str(int(a) / int(b))
-        result = result if int(result.split(
-            '.')[1]) > 0 else result.split('.')[0]
-        return result
-
-    def dms_to_dd(self, d, m, s, nwse):
+    @staticmethod
+    def dms_to_dd(d, m, s, direction):
         dd = float(d) + (float(m) / 60.0) + (float(s) / 3600.0)
-        if nwse in "SW":
+        if direction.upper() in "SW":
             dd *= -1
         return dd
 
-    def extract_coord(self, path):
-        gps_data_exif = 34853
+    def __transform_gps_data(self, source):
+        return [val/div for val, div in source]
+
+    def get_coordinates(self):
         latitude = 2
         longitude = 4
-        pos_cord_dir_one = 1
-        pos_cord_dir_two = 3
+        pos_cord_dir_lat = 1
+        pos_cord_dir_lon = 3
 
-        try:
-            image = Image.open(path)
-            lat_coordinat = image._getexif()[gps_data_exif][latitude]
-            lon_coordinat = image._getexif()[gps_data_exif][longitude]
+        gps_data = self.exif['GPSInfo']
 
-            cardinal_direction = (
-                image._getexif()[gps_data_exif][pos_cord_dir_one],
-                image._getexif()[gps_data_exif][pos_cord_dir_two]
-            )
+        cord = {
+            'lat': {'val': self.__transform_gps_data(gps_data[latitude]),
+                    'dir': gps_data[pos_cord_dir_lat]
+                    },
 
-        except KeyError:
-            return None
-        except FileNotFoundError:
-            print(f"File {path} not found")
-            return None
-        except TypeError:
-            print(f"File {path} is not subscriptable")
-            return None
-        except Exception as e:
-            return None
+            'lon': {'val': self.__transform_gps_data(gps_data[longitude]),
+                    'dir': gps_data[pos_cord_dir_lon]
+                    }
+        }
 
-        lat = ' '.join(self.__div_str(c, div) for (c, div) in lat_coordinat).split(' ')
-        lon = ' '.join(self.__div_str(c, div) for (c, div) in lon_coordinat).split(' ')
+        lat = self.dms_to_dd(cord['lat']['val'][0], cord['lat']['val'][1], cord['lat']['val'][2], cord['lat']['dir'])
+        lon = self.dms_to_dd(cord['lon']['val'][0], cord['lon']['val'][1], cord['lon']['val'][2], cord['lon']['dir'])
 
-        lat = self.dms_to_dd(lat[0], lat[1], lat[2], cardinal_direction[0])
-        lon = self.dms_to_dd(lon[0], lon[1], lon[2], cardinal_direction[1])
+        return {
+            'lat': lat,
+            'lon': lon
+                }
 
-        print(lat, lon)
-
-        return (lat, cardinal_direction[0], lon, cardinal_direction[1])
-
-    def extract_date(self, path):
-        date_data_exif = 36867
-        image = Image.open(path)
-        date, time = image._getexif()[date_data_exif].split(' ')
+    def extract_date(self):
+        date, time = self.exif['DateTimeOriginal'].split(' ')
         date, time = date.split(':'), time.split(':')
         return {
             'year': date[0],
