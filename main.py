@@ -10,8 +10,6 @@ try:
 except IndexError as e:
     path = '.'
 
-retriever_inform = RetrieverPhotoInformation()
-
 count = 0
 count_correct_processed = 0
 count_error_processed = 0
@@ -21,7 +19,8 @@ with open('coordinats.txt', 'w') as file_to_write:
     for f in os.listdir(path):
         count += 1
         if f.split('.')[-1] == 'jpg':
-            cord = retriever_inform.extract_coord(os.path.join(path, f))
+            photo = RetrieverPhotoInformation(os.path.join(path, f))
+            cord = photo.get_coordinates()
             if cord is not None:
                 count_correct_processed += 1
                 file_to_write.write(str(cord) + '\n')
