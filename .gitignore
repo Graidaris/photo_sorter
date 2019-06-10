@@ -4,6 +4,9 @@ OneDrive-2019-05-15
 coordinats.txt
 test.py
 out
-.idea
+.idea/*
 key.py
-__pychache__
+__pychache__/*
+venv/*
+.vscode/*
+*.pyc

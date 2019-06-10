@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!./venv/bin/python3
 
 import os
 import sys
@@ -51,7 +51,7 @@ with open('coordinats.txt', 'w') as file_to_write:
         else:
             count_not_correct_format += 1
 
-        """free trial of the service, I can use API one time per second"""
+        """Condition of the free trial of the service: I can use API one time per second"""
         time.sleep(1.1)
 
 print('Complete!\n'
