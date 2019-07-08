@@ -5,7 +5,7 @@ coordinats.txt
 test.py
 out
 .idea/*
-key.py
+privat.py
 __pychache__/*
 venv/*
 .vscode/*

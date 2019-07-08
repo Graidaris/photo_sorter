@@ -9,11 +9,15 @@ class RetrieverPhotoInformation:
     def __init__(self, name_file):
         self.photo_name = name_file
         img = PIL.Image.open(name_file)
-        self.exif = {
-            PIL.ExifTags.TAGS[k]: v
-            for k, v in img._getexif().items()
-            if k in PIL.ExifTags.TAGS
-        }
+        try:
+            self.exif = {
+                PIL.ExifTags.TAGS[k]: v
+                for k, v in img._getexif().items()
+                if k in PIL.ExifTags.TAGS
+            }
+        except AttributeError:
+            self.exif = None
+        
 
     @staticmethod
     def dms_to_dd(d, m, s, direction):
@@ -21,11 +25,19 @@ class RetrieverPhotoInformation:
         if direction.upper() in "SW":
             dd *= -1
         return dd
+    
+    @staticmethod
+    def is_photo(photo_name):
+        return photo_name.split('.')[-1].lower() in ['jpg']
+            
 
     def __transform_gps_data(self, source):
         return [val/div for val, div in source]
 
     def get_coordinates(self):
+        if self.exif is None:
+            return None
+        
         latitude = 2
         longitude = 4
         pos_cord_dir_lat = 1
