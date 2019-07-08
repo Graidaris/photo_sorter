@@ -10,6 +10,7 @@ import time
 I use opencagedata service
 My accesses key for API of the service
 '''
+
 import key
 from retriever_photo_information import RetrieverPhotoInformation
 
