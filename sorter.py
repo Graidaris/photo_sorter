@@ -15,7 +15,7 @@ class Sorter:
         self.PATH=path
     
     def get_location(self, lat, lon):
-        if not lat and not lon:
+        if not lat or not lon:
             return None
 
         URL = 'https://api.opencagedata.com/geocode/v1/json'
@@ -58,26 +58,21 @@ class Sorter:
             if location is None:
                 continue
             
-            if location['country'] is not None:
-                dir_country = join(self.PATH, location['country'])
-                if location['city'] is not None:
-                    dir_city = join(dir_country, location['city'])
-                                    
-                    if not os.path.exists(dir_country):
-                        os.mkdir(dir_country)
-                        os.mkdir(dir_city)
-                    else:
-                        if not os.path.exists(dir_city):
-                            os.mkdir(dir_city)
+            target_dir = ""
+            if location['country'] is None:
+                continue
+            
+            target_dir = join(self.PATH, location['country'])
+            if not os.path.exists(target_dir):
+                os.mkdir(target_dir)
+            
+            if location['city'] is not None:
+                target_dir = join(target_dir, location['city'])
+                if not os.path.exists(target_dir):
+                    os.mkdir(target_dir)
                     
-                    os.rename(join(self.PATH, photo), join(dir_city, photo))
-                    print(join(self.PATH, photo), "has change name to", join(dir_city, photo))
-                else:
-                    if not os.path.exists(dir_country):
-                            os.mkdir(dir_country)
-                    os.rename(join(self.PATH, photo), join(dir_country, photo))
-                    print(join(self.PATH, photo), "has change name to", join(dir_country, photo))
-                
+            os.rename(join(self.PATH, photo), join(target_dir, photo))
+            print(join(self.PATH, photo), "has change name to", join(target_dir, photo))
                 
                 
 
