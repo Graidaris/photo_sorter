@@ -7,12 +7,16 @@ import requests
 import time
 import privat
 
-from retriever_photo_information import RetrieverPhotoInformation
+from retriever_photo_information import RetrieverPhotoInformation, NotPhotoType, HasntGPSData
 
+'''
+I use 'opencagedata' service
+My accesses key for API of the service
+'''
 
 class Sorter:
-    def __init__(self, path):
-        self.PATH=path
+    def __init__(self):
+        pass
     
     def get_location(self, lat, lon):
         if not lat or not lon:
@@ -40,45 +44,42 @@ class Sorter:
 
         return location
         
-    def sort_files(self):
-        if not os.path.isdir(self.PATH):
+    def sort_files(self, path):
+        if not os.path.isdir(path):
             return None
         
-        for photo in os.listdir(self.PATH):
-            
-            if not RetrieverPhotoInformation.is_photo(photo):
+        for photo in os.listdir(path):
+            if not os.path.isfile(join(path,photo)):
                 continue
             
-            photo_exif_info = RetrieverPhotoInformation(join(self.PATH, photo))
-            coord = photo_exif_info.get_coordinates()
-            if coord is None:
-                continue
-            
-            location = self.get_location(coord['lat'], coord['lon'])                
-            if location is None:
-                continue
-            
-            target_dir = ""
-            if location['country'] is None:
-                continue
-            
-            target_dir = join(self.PATH, location['country'])
-            if not os.path.exists(target_dir):
-                os.mkdir(target_dir)
-            
-            if location['city'] is not None:
-                target_dir = join(target_dir, location['city'])
+            try:
+                photo_exif_info = RetrieverPhotoInformation(join(path, photo))
+                coord = photo_exif_info.get_coordinates()            
+                location = self.get_location(coord['lat'], coord['lon'])            
+                target_dir = ""            
+                target_dir = join(path, location['country'])
+                
                 if not os.path.exists(target_dir):
                     os.mkdir(target_dir)
-                    
-            os.rename(join(self.PATH, photo), join(target_dir, photo))
-            print(join(self.PATH, photo), "has change name to", join(target_dir, photo))
                 
+                if location['city'] is not None:
+                    target_dir = join(target_dir, location['city'])
+                    if not os.path.exists(target_dir):
+                        os.mkdir(target_dir)
+                        
+                os.rename(join(path, photo), join(target_dir, photo))
+                print(join(path, photo), "has change name to", join(target_dir, photo))
+            except HasntGPSData:
+                print(photo, "hasnt GPS data")
+            except NotPhotoType:
+                print("File ", photo, "is not a photo")
+            except TypeError:
+                print("Type error", photo)
                 
 
 
 if __name__ == '__main__':
     path = privat.path
-    sorter = Sorter(path)
-    sorter.sort_files()
+    sorter = Sorter()
+    sorter.sort_files(path)
     

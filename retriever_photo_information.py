@@ -3,10 +3,19 @@
 import PIL.Image
 import PIL.ExifTags
 
+class NotPhotoType(OSError):
+    pass
+
+class HasntGPSData(KeyError):
+    pass
+
 
 class RetrieverPhotoInformation:
 
     def __init__(self, name_file):
+        if not self.is_photo(name_file):
+            raise NotPhotoType
+        
         self.photo_name = name_file
         img = PIL.Image.open(name_file)
         try:
@@ -26,8 +35,7 @@ class RetrieverPhotoInformation:
             dd *= -1
         return dd
     
-    @staticmethod
-    def is_photo(photo_name):
+    def is_photo(self, photo_name):
         return photo_name.split('.')[-1].lower() in ['jpg']
             
 
@@ -46,8 +54,7 @@ class RetrieverPhotoInformation:
         try:
             gps_data = self.exif['GPSInfo']
         except KeyError:
-            print(self.photo_name, "hasn't GPS information.")
-            return None
+            raise HasntGPSData
 
         cord = {
             'lat': {
