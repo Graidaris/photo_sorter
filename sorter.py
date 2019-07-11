@@ -60,6 +60,7 @@ class Sorter:
         
     def test_request(self):
         URL = 'https://api.opencagedata.com/geocode/v1/json'
+        #test request, London latlon
         params = {
             "q": str(51.528583) + ' ' + str(-0.192254),
             "key": self.__api_key
