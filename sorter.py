@@ -14,9 +14,19 @@ I use 'opencagedata' service
 My accesses key for API of the service
 '''
 
-class Sorter:
+class LogSorter:
     def __init__(self):
         pass
+    
+    def addLog(self, text):
+        print(text)
+
+class Sorter:
+    def __init__(self):
+        self.log = LogSorter()
+    
+    def setLog(self, log):
+        self.log = log    
     
     def get_location(self, lat, lon):
         if not lat or not lon:
@@ -68,14 +78,16 @@ class Sorter:
                         os.mkdir(target_dir)
                         
                 os.rename(join(path, photo), join(target_dir, photo))
-                print(join(path, photo), "has change name to", join(target_dir, photo))
+                self.log.addLog(join(path, photo) + " has change name to " + join(target_dir, photo))
+                    
             except HasntGPSData:
-                print(photo, "hasnt GPS data")
+                self.log.addLog(f"{photo} hasnt GPS data")
             except NotPhotoType:
-                print("File ", photo, "is not a photo")
+                self.log.addLog(f"File {photo} is not a photo")
             except TypeError:
-                print("Type error", photo)
+                self.log.addLog(f"Type error {photo}")
                 
+        self.log.addLog("Done...\n\n\n")
 
 
 if __name__ == '__main__':
