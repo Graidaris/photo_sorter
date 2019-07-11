@@ -23,10 +23,14 @@ class LogSorter:
 
 class Sorter:
     def __init__(self):
-        self.log = LogSorter()
+        self.__log = LogSorter()
+        self.__api_key = privat.key
     
     def setLog(self, log):
-        self.log = log    
+        self.__log = log
+        
+    def setKeyAPI(self, api_key):
+        self.__api_key = api_key
     
     def get_location(self, lat, lon):
         if not lat or not lon:
@@ -35,7 +39,7 @@ class Sorter:
         URL = 'https://api.opencagedata.com/geocode/v1/json'
         params = {
             "q": str(lat) + ' ' + str(lon),
-            "key": privat.key
+            "key": self.__api_key
         }
         request = requests.get(url=URL, params=params)
 
@@ -54,8 +58,21 @@ class Sorter:
 
         return location
         
+    def test_request(self):
+        URL = 'https://api.opencagedata.com/geocode/v1/json'
+        params = {
+            "q": str(51.528583) + ' ' + str(-0.192254),
+            "key": self.__api_key
+        }
+        request = requests.get(url=URL, params=params)
+        return request.json()["status"]
+    
     def sort_files(self, path):
         if not os.path.isdir(path):
+            return None
+        
+        if self.__api_key is None:
+            self.__log.addLog("You forgot put api key.")
             return None
         
         for photo in os.listdir(path):
@@ -78,16 +95,16 @@ class Sorter:
                         os.mkdir(target_dir)
                         
                 os.rename(join(path, photo), join(target_dir, photo))
-                self.log.addLog(join(path, photo) + " has change name to " + join(target_dir, photo))
+                self.__log.addLog(join(path, photo) + " has change name to " + join(target_dir, photo))
                     
             except HasntGPSData:
-                self.log.addLog(f"{photo} hasnt GPS data")
+                self.__log.addLog(f"{photo} hasnt GPS data")
             except NotPhotoType:
-                self.log.addLog(f"File {photo} is not a photo")
+                self.__log.addLog(f"File {photo} is not a photo")
             except TypeError:
-                self.log.addLog(f"Type error {photo}")
+                self.__log.addLog(f"Type error {photo}")
                 
-        self.log.addLog("Done...\n\n\n")
+        self.__log.addLog("Done...\n\n\n")
 
 
 if __name__ == '__main__':

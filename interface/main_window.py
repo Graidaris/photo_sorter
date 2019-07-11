@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         dirName = QFileDialog.getExistingDirectory( options=options)
-        if dirName:            
+        if dirName:
             self.plainTextEdit_pathDir.setPlainText(dirName)
             
     def getDirName(self):

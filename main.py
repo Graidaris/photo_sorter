@@ -22,8 +22,15 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_Start.clicked.connect(self.startSort)
         
     def startSort(self):
+        api_key = self.ui.plainTextEdit.toPlainText()
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
-        self.sorter.sort_files(dir_name)
+        
+        self.sorter.setKeyAPI(api_key)
+        test_request = self.sorter.test_request()
+        if test_request['code'] == 401:
+            self.log.addLog(test_request['message'])
+        else:
+            self.sorter.sort_files(dir_name)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
