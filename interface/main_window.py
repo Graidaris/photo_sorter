@@ -10,6 +10,7 @@
 
 from PySide2 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
+import PySide2
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -87,7 +88,7 @@ class Ui_MainWindow(object):
         self.pushButton_dialog.clicked.connect(self.openFileNameDialog)
         self.path_to_dir.addWidget(self.pushButton_dialog)
         MainWindow.setCentralWidget(self.centralwidget)
-
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

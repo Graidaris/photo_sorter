@@ -6,6 +6,7 @@ from interface.main_window import Ui_MainWindow
 from sorter import Sorter
 from log_sorter import LogSorter
 
+import _thread
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -30,7 +31,8 @@ class MainWindow(QMainWindow):
         if test_request['code'] == 401:
             self.log.addLog(test_request['message'])
         else:
-            self.sorter.sort_files(dir_name)
+            #self.sorter.sort_files(dir_name)# fix thread
+            _thread.start_new_thread(self.sorter.sort_files, (dir_name, ))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
