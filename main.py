@@ -6,42 +6,7 @@ from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
 from sorter import Sorter
-
-
-class Log:
-        def __init__(self, signal):
-            self.signal = signal
-
-        def addLog(self, text):
-            self.signal.emit(text)
-
-
-class SortThread(QThread):
-    signal_log = pyqtSignal(str)
-
-    def __init__(self):
-        QThread.__init__(self)
-        self.sorter = Sorter()
-        loger = Log(self.signal_log)
-        self.sorter.setLog(loger)
-        self.api_key = None
-        self.path = None
-
-    def __del__(self):
-        self.wait()
-
-    def stop(self):
-        self.sorter.stop()
-        self.wait()
-
-    def setApiKey(self, key):
-        self.sorter.setKeyAPI(key)
-
-    def setPath(self, path):
-        self.path = path
-
-    def run(self):
-        self.sorter.sort_files(self.path)
+from sort_thread import SortThread
 
 
 class MainWindow(QMainWindow):
@@ -75,7 +40,15 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_Stop.setDisabled(not my_bool)
         self.ui.pushButton_dialog.setDisabled(my_bool)
 
-        if my_bool:
+    def switchMode(self):
+        if self.start:
+            self.start = False
+        else:
+            self.start = True
+            
+        self.disableUI(self.start)
+        
+        if self.start:
             self.ui.pushButton_Start.hide()
             self.ui.pushButton_Stop.show()
             self.ui.progressBar.show()
@@ -83,15 +56,6 @@ class MainWindow(QMainWindow):
             self.ui.pushButton_Start.show()
             self.ui.pushButton_Stop.hide()
             self.ui.progressBar.hide()
-
-    def switchMode(self):
-        if self.start:
-            self.start = False
-        else:
-            self.start = True
-
-        self.disableUI(self.start)
-        
 
     def getAmountElements(self, dir_name):
         try:
