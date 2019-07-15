@@ -1,2 +1,4 @@
 Pillow==6.0.0
 requests==2.22.0
+PyQt5==5.11.3
+PySide2==5.13.0

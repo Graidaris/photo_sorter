@@ -7,6 +7,7 @@ from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
 from sorter import Sorter
 
+
 class Log:
         def __init__(self, signal):
             self.signal = signal
@@ -14,9 +15,10 @@ class Log:
         def addLog(self, text):
             self.signal.emit(text)
 
+
 class SortThread(QThread):
     signal_log = pyqtSignal(str)
-    
+
     def __init__(self):
         QThread.__init__(self)
         self.sorter = Sorter()
@@ -27,20 +29,19 @@ class SortThread(QThread):
 
     def __del__(self):
         self.wait()
-        
+
     def stop(self):
         self.sorter.stop()
         self.wait()
-        
+
     def setApiKey(self, key):
         self.sorter.setKeyAPI(key)
-        
+
     def setPath(self, path):
         self.path = path
 
     def run(self):
-        self.sorter.sort_files(self.path)        
-    
+        self.sorter.sort_files(self.path)
 
 
 class MainWindow(QMainWindow):
@@ -48,7 +49,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        
+
         self.start = False
 
         self.ui.pushButton_Start.clicked.connect(self.startSort)
@@ -58,28 +59,28 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.hide()
         self.sorter = SortThread()
         self.sorter.signal_log.connect(self.addLog)
-        
+
     def openDialog(self):
         self.ui.openFileNameDialog()
-        
+
     def isStarted(self):
         self.switchMode()
         return self.start
-    
+
     def disableUI(self, my_bool):
         self.ui.plainTextEdit_pathDir.setDisabled(my_bool)
         self.ui.plainTextEdit.setDisabled(my_bool)
         self.ui.progressBar.setDisabled(not my_bool)
-        self.ui.pushButton_Start.setDisabled(my_bool)        
+        self.ui.pushButton_Start.setDisabled(my_bool)
         self.ui.pushButton_Stop.setDisabled(not my_bool)
-        self.ui.pushButton_dialog.setDisabled(my_bool)   
-        
+        self.ui.pushButton_dialog.setDisabled(my_bool)
+
         if my_bool:
-            self.ui.pushButton_Start.hide()        
+            self.ui.pushButton_Start.hide()
             self.ui.pushButton_Stop.show()
             self.ui.progressBar.show()
         else:
-            self.ui.pushButton_Start.show()        
+            self.ui.pushButton_Start.show()
             self.ui.pushButton_Stop.hide()
             self.ui.progressBar.hide()
 
@@ -88,8 +89,9 @@ class MainWindow(QMainWindow):
             self.start = False
         else:
             self.start = True
-            
+
         self.disableUI(self.start)
+        
 
     def getAmountElements(self, dir_name):
         try:
@@ -98,7 +100,7 @@ class MainWindow(QMainWindow):
         except FileNotFoundError as ef:
             self.log.addLog(ef)
             return None
-        
+
     def addLog(self, text):
         current_value = self.ui.progressBar.value()
         self.ui.progressBar.setValue(current_value + 1)
@@ -117,7 +119,7 @@ class MainWindow(QMainWindow):
             self.ui.progressBar.setMaximum(amount_elements)
             self.sorter.setPath(self.ui.plainTextEdit_pathDir.toPlainText())
             self.sorter.start()
-            
+
     def stopSort(self):
         self.switchMode()
         self.sorter.stop()
