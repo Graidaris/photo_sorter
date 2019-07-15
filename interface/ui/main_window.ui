@@ -47,47 +47,17 @@
       <x>10</x>
       <y>160</y>
       <width>521</width>
-      <height>191</height>
+      <height>171</height>
      </rect>
     </property>
     <property name="readOnly">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="plainTextEdit">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>60</y>
-      <width>311</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="plainText">
-     <string>Put here your API key</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Help">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>60</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>../icons/info.png</normaloff>../icons/info.png</iconset>
-    </property>
-    <property name="flat">
+   <widget class="QPushButton" name="pushButton_Start">
+    <property name="enabled">
      <bool>true</bool>
     </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_Start">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -109,7 +79,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../icons/power-button.png</normaloff>../icons/power-button.png</iconset>
+      <normaloff>../../icons/power-button.png</normaloff>../../icons/power-button.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -121,7 +91,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -154,7 +124,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -178,6 +148,89 @@
       <widget class="QPushButton" name="pushButton_dialog">
        <property name="text">
         <string>Browser</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>340</y>
+      <width>521</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_Stop">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>100</y>
+      <width>191</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Yu Gothic UI Semibold</family>
+      <pointsize>20</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>STOP</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../icons/stop.png</normaloff>../../icons/stop.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>60</y>
+      <width>341</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPlainTextEdit" name="plainTextEdit">
+       <property name="plainText">
+        <string>Put here your API key</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_Help">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../icons/info.png</normaloff>../../icons/info.png</iconset>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
