@@ -113,7 +113,7 @@ class Sorter:
 
                 os.rename(join(path, file_name), join(target_dir, file_name))
                 self.__log.addLog(
-                    join(path, file_name) + " has change name to " + join(target_dir, file_name)
+                    join(path, file_name) + " has changed the name to " + join(target_dir, file_name)
                 )
 
             except HasntGPSData:
