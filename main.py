@@ -1,6 +1,6 @@
 import sys
 import os
-from PySide2.QtWidgets import QApplication, QMainWindow, QPlainTextEdit
+from PySide2.QtWidgets import QApplication, QMainWindow, QPlainTextEdit, QMessageBox
 from PySide2.QtCore import QFile
 from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
@@ -23,6 +23,8 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_Start.clicked.connect(self.startSort)
         self.ui.pushButton_Stop.clicked.connect(self.stopSort)
         self.ui.pushButton_dialog.clicked.connect(self.openDialog)
+        self.ui.pushButton_Help.clicked.connect(self.openHelpBox)
+        
         self.ui.progressBar.setValue(0)
         self.ui.progressBar.hide()
         self.sorter = SortThread()
@@ -36,6 +38,11 @@ class MainWindow(QMainWindow):
 
     def openDialog(self):
         self.ui.openFileNameDialog()
+        
+    def openHelpBox(self):
+        header = "Help window"
+        text =  "To get the api key you need visit https://opencagedata.com/"
+        QMessageBox.question(self, header, text, QMessageBox.Close)
 
     def isStarted(self):
         self.switchMode()
