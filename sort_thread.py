@@ -25,6 +25,9 @@ class SortThread(QThread):
     def stop(self):
         self.sorter.stop()
         self.wait()
+        
+    def setOptions(self, city = False, date = False, subd = False):
+        self.sorter.setOptions(city, date, subd)
 
     def setApiKey(self, key):
         self.sorter.setKeyAPI(key)

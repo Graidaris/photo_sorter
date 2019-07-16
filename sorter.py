@@ -27,6 +27,9 @@ class Sorter:
         self.__log = Log()
         self.__api_key = None
         self.stoped = False
+        self.sort_by_city = False
+        self.sort_by_date = False
+        self.sort_by_subd = False
 
     def setLog(self, log):
         self.__log = log
@@ -36,6 +39,11 @@ class Sorter:
 
     def setKeyAPI(self, api_key):
         self.__api_key = api_key
+        
+    def setOptions(self, sort_by_city = False, sort_by_date = False, sort_by_subd = False):
+        self.sort_by_city = sort_by_city
+        self.sort_by_date = sort_by_date
+        self.sort_by_subd = sort_by_subd
 
     def get_location(self, lat, lon):
         if not lat or not lon:

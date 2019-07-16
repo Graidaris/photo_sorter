@@ -16,6 +16,9 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.start = False
+        self.sort_by_city = False
+        self.sort_by_date = False
+        self.sort_subdir = False
 
         self.ui.pushButton_Start.clicked.connect(self.startSort)
         self.ui.pushButton_Stop.clicked.connect(self.stopSort)
@@ -24,6 +27,12 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.hide()
         self.sorter = SortThread()
         self.sorter.signal_log.connect(self.addLog)
+        
+    def checkOptions(self):
+        self.sort_by_city = self.ui.checkBox_byCity.isChecked()
+        self.sort_by_date = self.ui.checkBox_byDate.isChecked()
+        self.sort_subdir = self.ui.checkBox_scanSubDir.isChecked()
+        self.sorter.setOptions(self.sort_by_city, self.sort_by_date, self.sort_subdir)
 
     def openDialog(self):
         self.ui.openFileNameDialog()
@@ -39,6 +48,9 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_Start.setDisabled(my_bool)
         self.ui.pushButton_Stop.setDisabled(not my_bool)
         self.ui.pushButton_dialog.setDisabled(my_bool)
+        self.ui.checkBox_byCity.setDisabled(my_bool)
+        self.ui.checkBox_byDate.setDisabled(my_bool)
+        self.ui.checkBox_scanSubDir.setDisabled(my_bool)
 
     def switchMode(self):
         if self.start:
@@ -70,7 +82,7 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.setValue(current_value + 1)
         self.ui.plainTextEdit_logi.insertPlainText(text + '\n')
 
-    def startSort(self):
+    def startSort(self):        
         api_key = self.ui.plainTextEdit.toPlainText()
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
         self.sorter.setApiKey(api_key)
@@ -79,6 +91,7 @@ class MainWindow(QMainWindow):
         if test_request['code'] == 401:
             self.addLog(test_request['message'])
         elif self.isStarted():
+            self.checkOptions()
             amount_elements = self.getAmountElements(dir_name)
             self.ui.progressBar.setMaximum(amount_elements)
             self.sorter.setPath(self.ui.plainTextEdit_pathDir.toPlainText())
