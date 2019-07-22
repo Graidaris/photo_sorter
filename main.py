@@ -7,14 +7,13 @@ from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
 from sorter import Sorter
 from sort_thread import SortThread
-
+from session import Session
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
         self.start = False
         self.sort_by_city = False
         self.sort_by_date = False
@@ -29,6 +28,16 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.hide()
         self.sorter = SortThread()
         self.sorter.signal_log.connect(self.addLog)
+        
+        #self.session  = Session()
+        #self.loadSession()
+        
+    def loadSession(self):
+        session_data = self.session.getData()
+        self.ui.plainTextEdit.setPlainText(session_data['API'])
+        
+    def saveSession(self, data):
+        self.session.saveSession(data)
         
     def checkOptions(self):
         self.sort_by_city = self.ui.checkBox_byCity.isChecked()
@@ -55,6 +64,7 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_Start.setDisabled(my_bool)
         self.ui.pushButton_Stop.setDisabled(not my_bool)
         self.ui.pushButton_dialog.setDisabled(my_bool)
+        self.ui.pushButton_Help.setDisabled(my_bool)
         self.ui.checkBox_byCity.setDisabled(my_bool)
         self.ui.checkBox_byDate.setDisabled(my_bool)
         self.ui.checkBox_scanSubDir.setDisabled(my_bool)
@@ -88,7 +98,7 @@ class MainWindow(QMainWindow):
         current_value = self.ui.progressBar.value()
         self.ui.progressBar.setValue(current_value + 1)
         self.ui.plainTextEdit_logi.insertPlainText(text + '\n')
-
+        
     def startSort(self):        
         api_key = self.ui.plainTextEdit.toPlainText()
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()

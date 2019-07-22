@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QThread
-from sorter import Sorter
+from sorter import Sorter, NotApiException
 
 class Log:
         def __init__(self, signal):
@@ -36,4 +36,8 @@ class SortThread(QThread):
         self.path = path
 
     def run(self):
-        self.sorter.sort_files(self.path)
+        try:
+            self.sorter.sort_files(self.path)
+        except NotApiException:
+            print("Api not found")
+        

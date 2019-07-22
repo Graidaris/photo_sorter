@@ -12,6 +12,8 @@ from retriever_photo_information import RetrieverPhotoInformation, NotPhotoType,
 I use 'opencagedata' service
 '''
 
+class NotApiException(Exception):
+    pass
 
 class Log:
     def __init__(self):
@@ -28,7 +30,7 @@ class Sorter:
         self.stoped = False
         self.sort_by_city = False
         self.sort_by_date = False
-        self.sort_subd = False
+        self.sort_subd = False #subd is subdirection
 
     def setLog(self, log):
         self.__log = log
@@ -127,7 +129,7 @@ class Sorter:
     def sort_files(self, path):
         if self.__api_key is None:
             self.__log.addLog("You forgot put api key.")
-            return None
+            raise NotApiException
         
         self.stoped = False
         self.sortDir(path)
