@@ -9,3 +9,5 @@ This program can sort your photo by places and date. To determine name of the lo
 
 3. Run the program
    - ```python3 main.py```
+   
+4. For using this program (namely using locations sort), you need to take your own API-key from [opencagedata.com](https://opencagedata.com/)
