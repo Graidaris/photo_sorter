@@ -6,7 +6,7 @@ import sys
 import requests
 import time
 
-from retriever_photo_information import RetrieverPhotoInformation, NotPhotoType, HasntGPSData
+from retriever_photo_info import RetrieverPhotoInformation, NotPhotoType, HasntGPSData
 
 '''
 I use 'opencagedata' service

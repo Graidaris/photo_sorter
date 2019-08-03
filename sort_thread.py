@@ -2,11 +2,11 @@ from PyQt5.QtCore import pyqtSignal, QThread
 from sorter import Sorter, NotApiException
 
 class Log:
-        def __init__(self, signal):
-            self.signal = signal
+    def __init__(self, signal):
+        self.signal = signal
 
-        def addLog(self, text):
-            self.signal.emit(text)  
+    def addLog(self, text):
+        self.signal.emit(text)  
 
 class SortThread(QThread):
     signal_log = pyqtSignal(str)
