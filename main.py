@@ -6,7 +6,7 @@ from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
 from sorter import Sorter
-from sort_thread import SortThread
+from sort_thread import SortThread, NotApiException, PathNotSetException
 from session import Session
 
 class MainWindow(QMainWindow):
@@ -112,7 +112,13 @@ class MainWindow(QMainWindow):
             amount_elements = self.getAmountElements(dir_name)
             self.ui.progressBar.setMaximum(amount_elements)
             self.sorter.setPath(self.ui.plainTextEdit_pathDir.toPlainText())
-            self.sorter.start()
+            
+            try:                
+                self.sorter.start()
+            except PathNotSetException as error:
+                self.addLog(error)
+            except NotApiException as error:
+                self.addLog(error)
 
     def stopSort(self):
         self.switchMode()

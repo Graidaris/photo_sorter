@@ -2,7 +2,6 @@
 
 import os
 from os.path import join
-import sys
 import requests
 import time
 
@@ -129,7 +128,7 @@ class Sorter:
     def sort_files(self, path):
         if self.__api_key is None:
             self.__log.addLog("You forgot put api key.")
-            raise NotApiException
+            raise NotApiException("You forgot to set the API key")
         
         self.stoped = False
         self.sortDir(path)

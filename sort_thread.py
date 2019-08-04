@@ -6,38 +6,47 @@ class Log:
         self.signal = signal
 
     def addLog(self, text):
-        self.signal.emit(text)  
+        self.signal.emit(text)
+        
+class PathNotSetException(Exception):
+    pass
 
 class SortThread(QThread):
     signal_log = pyqtSignal(str)
 
     def __init__(self):
         QThread.__init__(self)
-        self.sorter = Sorter()
+        self.__sorter = Sorter()        
         loger = Log(self.signal_log)
-        self.sorter.setLog(loger)
-        self.api_key = None
+        self.__sorter.setLog(loger)
         self.path = None
+        self.api_key = None
 
     def __del__(self):
         self.wait()
 
     def stop(self):
-        self.sorter.stop()
+        self.__sorter.stop()
         self.wait()
         
-    def setOptions(self, city = False, date = False, subd = False):
-        self.sorter.setOptions(city, date, subd)
+    def setOptions(self, city = False, date = False, subdirectories = False):
+        """
+        Set options, mean sort by ...
+        """
+        self.__sorter.setOptions(city, date, subdirectories)
 
-    def setApiKey(self, key):
-        self.sorter.setKeyAPI(key)
+    def setApiKey(self, key: str):
+        self.api_key = key
+        self.__sorter.setKeyAPI(key)
 
-    def setPath(self, path):
+    def setPath(self, path: str):
         self.path = path
 
     def run(self):
-        try:
-            self.sorter.sort_files(self.path)
-        except NotApiException:
-            print("Api not found")
+        if path is None:
+            raise PathNotSetException("You forgot to set a path.")
         
+        try:
+            self.__sorter.sort_files(self.path)
+        except NotApiException:
+            raise NotApiException
