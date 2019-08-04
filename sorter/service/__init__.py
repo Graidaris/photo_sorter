@@ -1,1 +1,1 @@
-from sorter.service import Service
+from sorter.service import ServiceAPI
