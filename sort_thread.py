@@ -1,5 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QThread
-from sorter import Sorter, NotApiException
+from sorter import Sorter, RequestError
 
 class Log:
     def __init__(self, signal):
@@ -20,7 +20,6 @@ class SortThread(QThread):
         loger = Log(self.signal_log)
         self.__sorter.setLog(loger)
         self.path = None
-        self.api_key = None
 
     def __del__(self):
         self.wait()
@@ -36,17 +35,16 @@ class SortThread(QThread):
         self.__sorter.setOptions(city, date, subdirectories)
 
     def setApiKey(self, key: str):
-        self.api_key = key
         self.__sorter.setKeyAPI(key)
 
     def setPath(self, path: str):
         self.path = path
 
     def run(self):
-        if path is None:
+        if self.path is None:
             raise PathNotSetException("You forgot to set a path.")
         
         try:
             self.__sorter.sort_files(self.path)
-        except NotApiException:
-            raise NotApiException
+        except RequestError:
+            raise RequestError

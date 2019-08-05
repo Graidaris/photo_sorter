@@ -1,0 +1,5 @@
+class HasntGPSData(KeyError):
+    """
+    
+    """
+    pass

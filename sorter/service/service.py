@@ -12,16 +12,16 @@ class ServiceAPI:
         self.__api_key = None
         self.current_request_data = None
     
-    def get_request(self, params):
-        request = requests.get(url=URL, params=params)
+    def get_request(self, params: dict) -> dict:
+        request = requests.get(url=self.URL, params=params)
         status = request.json()['status']
         if status['code'] != 200:
-            raise RequestError("ERROR:" + status['message'])
+            raise RequestError(status['message'])
         # Condition of the free trial of the service: I can use API one time per second
         time.sleep(1.1)
         return request
     
-    def set_api_key(self, key):
+    def set_api_key(self, key: str):
         self.__api_key = key
         
     def check_api_key(self):
@@ -36,9 +36,9 @@ class ServiceAPI:
         
     def update_data(self, lat, lon):
         if not lat or not lon:
-            raise ParamNotFound("ERROR: Parametrs: lat and/or lon not found.")
+            raise ParamNotFound("Parametrs: lat and/or lon not found.")
         try:
-            self.current_request_data = get_request(
+            self.current_request_data = self.get_request(
                 {
                     "q": str(lat) + ' ' + str(lon),
                     "key": self.__api_key
@@ -47,7 +47,7 @@ class ServiceAPI:
         except RequestError as e:
             raise e
         
-    def get_country(self):
+    def get_country(self) -> str:
         try:
             country = self.current_request_data.json()['results'][0]['components']['country']
         except KeyError:
@@ -55,13 +55,12 @@ class ServiceAPI:
             
         return country
     
-    def get_city(self):
+    def get_city(self) -> str:
         try:
             city = self.current_request_data.json()['results'][0]['components']['city']
         except KeyError:
             city = None
             
         return city
-    
     
     

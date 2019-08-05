@@ -5,8 +5,7 @@ from PySide2.QtCore import QFile
 from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
-from sorter import Sorter
-from sort_thread import SortThread, NotApiException, PathNotSetException
+from sort_thread import SortThread, RequestError, PathNotSetException
 from session import Session
 
 class MainWindow(QMainWindow):
@@ -103,21 +102,25 @@ class MainWindow(QMainWindow):
         api_key = self.ui.plainTextEdit.toPlainText()
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
         self.sorter.setApiKey(api_key)
-        test_request = Sorter.test_request(api_key)
+        
+        # try:
+        #     self.sorter.check_api_key(api_key)
+        # except RequestError as error:
+        #     self.addLog(error)
+        #     return
+        
 
-        if test_request['code'] == 401:
-            self.addLog(test_request['message'])
-        elif self.isStarted():
+        if self.isStarted():
             self.checkOptions()
             amount_elements = self.getAmountElements(dir_name)
             self.ui.progressBar.setMaximum(amount_elements)
             self.sorter.setPath(self.ui.plainTextEdit_pathDir.toPlainText())
             
-            try:                
+            try:
                 self.sorter.start()
             except PathNotSetException as error:
                 self.addLog(error)
-            except NotApiException as error:
+            except RequestError as error:
                 self.addLog(error)
 
     def stopSort(self):

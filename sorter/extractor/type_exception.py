@@ -1,0 +1,3 @@
+
+class NotPhotoType(OSError):
+    pass

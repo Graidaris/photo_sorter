@@ -2,17 +2,10 @@
 
 import PIL.Image
 import PIL.ExifTags
+from sorter.extractor.gps_exception import HasntGPSData
+from sorter.extractor.type_exception import NotPhotoType
 
-
-class NotPhotoType(OSError):
-    pass
-
-
-class HasntGPSData(KeyError):
-    pass
-
-
-class RetrieverPhotoInformation:
+class ExtractorExif:
     def __init__(self, name_file):
         if not self.is_photo(name_file):
             raise NotPhotoType
