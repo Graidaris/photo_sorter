@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import time
 import json
@@ -14,11 +16,12 @@ class ServiceAPI:
     
     def get_request(self, params: dict) -> dict:
         request = requests.get(url=self.URL, params=params)
+        # Condition of the free trial of the service: I can use API one time per second
+        time.sleep(1.1)
         status = request.json()['status']
         if status['code'] != 200:
             raise RequestError(status['message'])
-        # Condition of the free trial of the service: I can use API one time per second
-        time.sleep(1.1)
+        
         return request
     
     def set_api_key(self, key: str):

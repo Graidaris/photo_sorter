@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from PyQt5.QtCore import pyqtSignal, QThread
 from sorter import Sorter, RequestError
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sys
 import os
 from PySide2.QtWidgets import QApplication, QMainWindow, QPlainTextEdit, QMessageBox

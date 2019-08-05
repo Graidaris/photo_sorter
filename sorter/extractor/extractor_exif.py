@@ -1,4 +1,4 @@
-#!./venv/bin/python3
+# -*- coding: utf-8 -*-
 
 import PIL.Image
 import PIL.ExifTags
