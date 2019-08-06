@@ -83,7 +83,7 @@ class Sorter:
         try:
             self.service_API.check_api_key()            
         except RequestError as error:
-            self.__log.addLog(error)
+            self.__log.addLog(error.__str__())
             return
         
         if path == "" or path == None:

@@ -10,17 +10,20 @@ class Log:
     def addLog(self, text):
         self.signal.emit(text)
         
+    
+        
 class PathNotSetException(Exception):
     pass
 
 class SortThread(QThread):
     signal_log = pyqtSignal(str)
+    signal_endWork = pyqtSignal()
 
     def __init__(self):
         QThread.__init__(self)
         self.__sorter = Sorter()        
-        loger = Log(self.signal_log)
-        self.__sorter.setLog(loger)
+        self.loger = Log(self.signal_log)
+        self.__sorter.setLog(self.loger)
         self.path = None
 
     def __del__(self):
@@ -46,7 +49,5 @@ class SortThread(QThread):
         if self.path is None:
             raise PathNotSetException("You forgot to set a path.")
         
-        try:
-            self.__sorter.sort_files(self.path)
-        except RequestError:
-            raise RequestError
+        self.__sorter.sort_files(self.path)        
+        self.signal_endWork.emit()

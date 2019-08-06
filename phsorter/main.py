@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         self.ui.progressBar.hide()
         self.sorter = SortThread()
         self.sorter.signal_log.connect(self.addLog)
+        self.sorter.signal_endWork.connect(self.stopSort)
         
         #self.session  = Session()
         #self.loadSession()
@@ -92,7 +93,7 @@ class MainWindow(QMainWindow):
             amount = len(os.listdir(dir_name))
             return amount
         except FileNotFoundError as ef:
-            self.log.addLog(ef)
+            self.addLog(ef.__str__())
             return None
 
     def addLog(self, text):
@@ -105,12 +106,6 @@ class MainWindow(QMainWindow):
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
         self.sorter.setApiKey(api_key)
         
-        # try:
-        #     self.sorter.check_api_key(api_key)
-        # except RequestError as error:
-        #     self.addLog(error)
-        #     return
-        
 
         if self.isStarted():
             self.checkOptions()
@@ -122,7 +117,11 @@ class MainWindow(QMainWindow):
                 self.sorter.start()
             except PathNotSetException as error:
                 self.addLog(error)
-            except RequestError as error:
+            except RequestError as error: 
+                """
+                Here error
+                TypeError: SortThread.signal_log[str].emit(): argument 1 has unexpected type 'RequestError'
+                """
                 self.addLog(error)
 
     def stopSort(self):
