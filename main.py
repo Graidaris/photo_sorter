@@ -51,7 +51,10 @@ class MainWindow(QMainWindow):
             self.ui.checkBox_saveSession.setChecked(True)
         
     def saveSession(self, data: dict):
-        self.session.saveSession(data)
+        try:
+            self.session.saveSession(data)
+        except OSError as ex:
+            self.addLog(ex)
         
     def checkOptions(self):
         self.sort_by_city = self.ui.checkBox_byCity.isChecked()
@@ -82,6 +85,7 @@ class MainWindow(QMainWindow):
         self.ui.checkBox_byCity.setDisabled(my_bool)
         self.ui.checkBox_byDate.setDisabled(my_bool)
         self.ui.checkBox_scanSubDir.setDisabled(my_bool)
+        self.ui.checkBox_saveSession.setDisabled(my_bool)
 
     def switchMode(self):
         if self.start:

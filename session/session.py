@@ -15,23 +15,14 @@ class Session:
         self.__loadLastSession()
 
     def __loadLastSession(self):
-        if not os.path.exists(self.__FILE_PATH):
-            self.__createFile()
-        else:
+        if os.path.exists(self.__FILE_PATH):
             with open(self.__FILE_PATH, 'r') as file:
                 self.file_js = json.load(file)
-
-    def __createFile(self):
-        file = open(self.__FILE_PATH, "w")
-        file.close()
 
     def getData(self, key):        
         return self.file_js.get(key)
 
     def saveSession(self, data):
-        if not os.path.exists(self.__FILE_PATH):
-            raise FileNotFoundError
-
         with open(self.__FILE_PATH, 'w') as target:
             json.dump(data, target)
 
