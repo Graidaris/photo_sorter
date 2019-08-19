@@ -10,6 +10,7 @@ from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 from sort_thread import SortThread, RequestError, PathNotSetException
 from session import Session
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -24,64 +25,62 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_Stop.clicked.connect(self.stopSort)
         self.ui.pushButton_dialog.clicked.connect(self.openDialog)
         self.ui.pushButton_Help.clicked.connect(self.openHelpBox)
-        
+
         self.ui.progressBar.setValue(0)
         self.ui.progressBar.hide()
         self.sorter = SortThread()
         self.sorter.signal_log.connect(self.addLog)
         self.sorter.signal_endWork.connect(self.stopSort)
-        
-        self.session  = Session()
+
+        self.session = Session()
         self.loadSession()
-        
+
     def loadSession(self):
         cash_exists = False
         session_API = self.session.getData('API_key')
         session_dir = self.session.getData('path')
-        
+
         if session_API is not None:
             self.ui.plainTextEdit.setPlainText(session_API)
             cash_exists = True
-            
+
         if session_dir is not None:
             self.ui.plainTextEdit_pathDir.setPlainText(session_dir)
             cash_exists = True
-            
-        if cash_exists: 
+
+        if cash_exists:
             self.ui.checkBox_saveSession.setChecked(True)
-            
-            
-            
+
     def exit(self):
         if self.ui.checkBox_saveSession.isChecked():
-            self.saveSession(
-                {
-                    'API_key': self.ui.plainTextEdit.toPlainText(),
-                    'path': self.ui.plainTextEdit_pathDir.toPlainText()
-                }
-            )
+            self.saveSession({
+                'API_key':
+                self.ui.plainTextEdit.toPlainText(),
+                'path':
+                self.ui.plainTextEdit_pathDir.toPlainText()
+            })
         else:
             self.session.delete_session()
-            
-        
+
     def saveSession(self, data: dict):
         try:
             self.session.saveSession(data)
         except OSError as ex:
             self.addLog(ex)
-        
+
     def checkOptions(self):
         self.sort_by_city = self.ui.checkBox_byCity.isChecked()
         self.sort_by_date = self.ui.checkBox_byDate.isChecked()
         self.sort_subdir = self.ui.checkBox_scanSubDir.isChecked()
-        self.sorter.setOptions(self.sort_by_city, self.sort_by_date, self.sort_subdir)
+        self.sorter.setOptions(self.sort_by_city, self.sort_by_date,
+                               self.sort_subdir)
 
     def openDialog(self):
         self.ui.openFileNameDialog()
-        
+
     def openHelpBox(self):
         header = "Help window"
-        text =  "To get the api key you need visit https://opencagedata.com/"
+        text = "To get the api key you need visit https://opencagedata.com/"
         QMessageBox.question(self, header, text, QMessageBox.Close)
 
     def isStarted(self):
@@ -106,9 +105,9 @@ class MainWindow(QMainWindow):
             self.start = False
         else:
             self.start = True
-            
+
         self.disableUI(self.start)
-        
+
         if self.start:
             self.ui.pushButton_Start.hide()
             self.ui.pushButton_Stop.show()
@@ -130,23 +129,23 @@ class MainWindow(QMainWindow):
         current_value = self.ui.progressBar.value()
         self.ui.progressBar.setValue(current_value + 1)
         self.ui.plainTextEdit_logi.insertPlainText(text + '\n')
-        
-    def startSort(self):        
+
+    def startSort(self):
         api_key = self.ui.plainTextEdit.toPlainText()
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
-        self.sorter.setApiKey(api_key)        
-        
+        self.sorter.setApiKey(api_key)
+
         if self.isStarted():
             self.checkOptions()
             amount_elements = self.getAmountElements(dir_name)
             self.ui.progressBar.setMaximum(amount_elements)
             self.sorter.setPath(dir_name)
-            
+
             try:
                 self.sorter.start()
             except PathNotSetException as error:
                 self.addLog(error)
-            except RequestError as error: 
+            except RequestError as error:
                 """
                 Here error
                 TypeError: SortThread.signal_log[str].emit(): argument 1 has unexpected type 'RequestError'
