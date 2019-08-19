@@ -2,7 +2,7 @@
 
 import sys
 import os
-from PySide2.QtWidgets import QApplication, QMainWindow, QPlainTextEdit, QMessageBox
+from PySide2.QtWidgets import QApplication, QMainWindow, QPlainTextEdit, QMessageBox, QAction
 from PySide2.QtCore import QFile
 from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
@@ -49,6 +49,20 @@ class MainWindow(QMainWindow):
             
         if cash_exists: 
             self.ui.checkBox_saveSession.setChecked(True)
+            
+            
+            
+    def exit(self):
+        if self.ui.checkBox_saveSession.isChecked():
+            self.saveSession(
+                {
+                    'API_key': self.ui.plainTextEdit.toPlainText(),
+                    'path': self.ui.plainTextEdit_pathDir.toPlainText()
+                }
+            )
+        else:
+            self.session.delete_session()
+            
         
     def saveSession(self, data: dict):
         try:
@@ -120,23 +134,13 @@ class MainWindow(QMainWindow):
     def startSort(self):        
         api_key = self.ui.plainTextEdit.toPlainText()
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
-        self.sorter.setApiKey(api_key)
+        self.sorter.setApiKey(api_key)        
         
-        if self.ui.checkBox_saveSession.isChecked():
-            self.saveSession(
-                {
-                    'API_key': api_key,
-                    'path': dir_name
-                }
-            )
-        else:
-            self.session.delete_session()
-
         if self.isStarted():
             self.checkOptions()
             amount_elements = self.getAmountElements(dir_name)
             self.ui.progressBar.setMaximum(amount_elements)
-            self.sorter.setPath(self.ui.plainTextEdit_pathDir.toPlainText())
+            self.sorter.setPath(dir_name)
             
             try:
                 self.sorter.start()
@@ -160,5 +164,6 @@ if __name__ == "__main__":
 
     window = MainWindow()
     window.show()
-
-    sys.exit(app.exec_())
+    if app.exec_() == 0:
+        window.exit()
+        sys.exit(0)
