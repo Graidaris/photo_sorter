@@ -8,8 +8,7 @@ class Log:
         self.signal = signal
 
     def addLog(self, text):
-        self.signal.emit(text)
-        
+        self.signal.emit(text)        
     
         
 class PathNotSetException(Exception):
