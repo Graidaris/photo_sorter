@@ -31,14 +31,26 @@ class MainWindow(QMainWindow):
         self.sorter.signal_log.connect(self.addLog)
         self.sorter.signal_endWork.connect(self.stopSort)
         
-        #self.session  = Session()
-        #self.loadSession()
+        self.session  = Session()
+        self.loadSession()
         
     def loadSession(self):
-        session_data = self.session.getData()
-        self.ui.plainTextEdit.setPlainText(session_data['API'])
+        cash_exists = False
+        session_API = self.session.getData('API_key')
+        session_dir = self.session.getData('path')
         
-    def saveSession(self, data):
+        if session_API is not None:
+            self.ui.plainTextEdit.setPlainText(session_API)
+            cash_exists = True
+            
+        if session_dir is not None:
+            self.ui.plainTextEdit_pathDir.setPlainText(session_dir)
+            cash_exists = True
+            
+        if cash_exists: 
+            self.ui.checkBox_saveSession.setChecked(True)
+        
+    def saveSession(self, data: dict):
         self.session.saveSession(data)
         
     def checkOptions(self):
@@ -106,6 +118,15 @@ class MainWindow(QMainWindow):
         dir_name = self.ui.plainTextEdit_pathDir.toPlainText()
         self.sorter.setApiKey(api_key)
         
+        if self.ui.checkBox_saveSession.isChecked():
+            self.saveSession(
+                {
+                    'API_key': api_key,
+                    'path': dir_name
+                }
+            )
+        else:
+            self.session.delete_session()
 
         if self.isStarted():
             self.checkOptions()
