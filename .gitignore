@@ -1,6 +1,5 @@
 test.jpg
 test1.jpg
-OneDrive-2019-05-15
 coordinats.txt
 test.py
 out
@@ -10,3 +9,4 @@ __pychache__/*
 venv/*
 .vscode/*
 *.pyc
+.github/*
