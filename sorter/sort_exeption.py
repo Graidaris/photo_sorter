@@ -1,0 +1,2 @@
+class SortError(Exception):
+    pass

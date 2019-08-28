@@ -40,6 +40,7 @@ class ServiceAPI:
     def update_data(self, lat, lon):
         if not lat or not lon:
             raise ParamNotFound("Parametrs: lat and/or lon not found.")
+        
         try:
             self.current_request_data = self.get_request(
                 {
