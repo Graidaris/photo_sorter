@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from sorter.sorter import Sorter, RequestError
+from sorter.sorter import Sorter, RequestError, getAmountElements

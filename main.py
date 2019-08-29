@@ -7,6 +7,7 @@ from PySide2.QtCore import QFile
 from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
+from sorter import getAmountElements
 from sort_thread import SortThread, RequestError, PathNotSetException
 from session import Session
 
@@ -17,9 +18,6 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.start = False
-        self.sort_by_city = False
-        self.sort_by_date = False
-        self.sort_subdir = False
 
         self.ui.pushButton_Start.clicked.connect(self.startSort)
         self.ui.pushButton_Stop.clicked.connect(self.stopSort)
@@ -31,6 +29,7 @@ class MainWindow(QMainWindow):
         self.sorter = SortThread()
         self.sorter.signal_log.connect(self.addLog)
         self.sorter.signal_endWork.connect(self.stopSort)
+        self.sorter.signal_count_elements.connect(self.updateProgressBar)
 
         self.session = Session()
         self.loadSession()
@@ -69,11 +68,13 @@ class MainWindow(QMainWindow):
             self.addLog(ex)
 
     def checkOptions(self):
-        self.sort_by_city = self.ui.checkBox_byCity.isChecked()
-        self.sort_by_date = self.ui.checkBox_byDate.isChecked()
-        self.sort_subdir = self.ui.checkBox_scanSubDir.isChecked()
-        self.sorter.setOptions(self.sort_by_city, self.sort_by_date,
-                               self.sort_subdir)
+        sort_by_city = self.ui.checkBox_byCity.isChecked()
+        sort_by_date = self.ui.checkBox_byDate.isChecked()
+        sort_subdir = self.ui.checkBox_scanSubDir.isChecked()
+        del_trash = False
+        
+        self.sorter.setOptions(sort_by_city, sort_by_date,
+                               sort_subdir, del_trash)
 
     def openDialog(self):
         self.ui.openFileNameDialog()
@@ -116,18 +117,12 @@ class MainWindow(QMainWindow):
             self.ui.pushButton_Start.show()
             self.ui.pushButton_Stop.hide()
             self.ui.progressBar.hide()
-
-    def getAmountElements(self, dir_name):
-        try:
-            amount = len(os.listdir(dir_name))
-            return amount
-        except FileNotFoundError as ef:
-            self.addLog(ef.__str__())
-            return None
-
-    def addLog(self, text):
+        
+    def updateProgressBar(self):
         current_value = self.ui.progressBar.value()
         self.ui.progressBar.setValue(current_value + 1)
+
+    def addLog(self, text):        
         self.ui.plainTextEdit_logi.insertPlainText(text + '\n')
 
     def startSort(self):
@@ -137,7 +132,7 @@ class MainWindow(QMainWindow):
 
         if self.isStarted():
             self.checkOptions()
-            amount_elements = self.getAmountElements(dir_name)
+            amount_elements = getAmountElements(dir_name)
             self.ui.progressBar.setMaximum(amount_elements)
             self.sorter.setPath(dir_name)
 

@@ -10,6 +10,16 @@ from sorter.extractor import ExtractorExif, NotPhotoType, HasntGPSData
 from sorter.log import Log
 from sorter.service import ServiceAPI, RequestError
 
+def getAmountElements(path: str) -> int:
+        count_file = 0
+        for file in os.listdir(path):
+            full_name = os.path.join(path, file)
+            if os.path.isfile(full_name):
+                count_file += 1
+            elif os.path.isdir(full_name):
+                count_file += getAmountElements(full_name)
+                
+        return count_file
 
 class Sorter:
     def __init__(self):
@@ -18,11 +28,19 @@ class Sorter:
         self.sort_by_city = False
         self.sort_by_date = False
         self.sort_subdir = False  #subd is subdirection
+        self.del_trash_opt = False
         self.service_API = ServiceAPI()
         self.root_dir = None
+        self.progressMon = None
 
     def setKeyAPI(self, key):
         self.service_API.set_api_key(key)
+        
+    def setProgressMon(self, func):
+        """
+        Set a function for monitoring the progress
+        """
+        self.progressMon = func
 
     def setLog(self, log):
         self.__log = log
@@ -33,13 +51,29 @@ class Sorter:
     def setOptions(self,
                    sort_by_city=False,
                    sort_by_date=False,
-                   sort_by_subd=False):
+                   sort_by_subd=False,
+                   delete_trash=False):
 
         self.sort_by_city = sort_by_city
         self.sort_by_date = sort_by_date
         self.sort_subdir = sort_by_subd
+        self.del_trash_opt = delete_trash
 
+    def delete_folder(self, path):
+        try:
+            os.rmdir(path)
+        except OSError:
+            pass
 
+    def delete_trash(self, path):
+        """
+        Deletes empty folders
+        """
+        for element in os.listdir(path):
+            full_name = os.path.join(path, element)
+            if os.path.isdir(full_name):
+                self.delete_trash(full_name)
+        self.delete_folder(path) 
 
     def createDir(self, target_dir, name):
         if name is not None:
@@ -82,6 +116,10 @@ class Sorter:
         self.__log.addLog(full_name + " has changed the name to " + target_dir)
         
 
+    def progressUpdate(self):
+        if self.progressMon is not None:
+            self.progressMon()
+    
     def _sort(self, path):
         for file_name in os.listdir(path):
             if self.stoped:
@@ -94,19 +132,9 @@ class Sorter:
             if object_is_dir and self.sort_subdir:
                 new_path = os.path.join(path, file_name)
                 self._sort(new_path)
-            else:
+            else:                
                 self._moveFileToDir(path, file_name)
-                
-    def count_elements(self, path: str) -> int:
-        count_file = 0
-        for file in os.listdir(path):
-            full_name = os.path.join(path, file)
-            if os.path.isfile(full_name):
-                count_file += 1
-            elif os.path.isdir(full_name):
-                count_file += self.count_elements(full_name)
-                
-        return count_file
+                self.progressUpdate()
     
     def check_api_key(self):
         try:
@@ -128,4 +156,6 @@ class Sorter:
         self.root_dir = path
         self.stoped = False
         self._sort(path)
+        if self.del_trash_opt:
+            self.delete_trash(self.root_dir)
         self.__log.addLog("Done...\n\n\n")
