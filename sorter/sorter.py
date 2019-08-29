@@ -39,8 +39,7 @@ class Sorter:
         self.sort_by_date = sort_by_date
         self.sort_subdir = sort_by_subd
 
-    def check_api_key(self, api_key: str):
-        self.service_API.check_api_key(api_key)
+
 
     def createDir(self, target_dir, name):
         if name is not None:
@@ -83,8 +82,7 @@ class Sorter:
         self.__log.addLog(full_name + " has changed the name to " + target_dir)
         
 
-    def _sort(self, path, file=''): #some problem
-        path = os.path.join(path, file)
+    def _sort(self, path):
         for file_name in os.listdir(path):
             if self.stoped:
                 self.__log.addLog("Sorter has been stoped...")
@@ -95,21 +93,36 @@ class Sorter:
 
             if object_is_dir and self.sort_subdir:
                 new_path = os.path.join(path, file_name)
-                self._sort(new_path, file_name)
+                self._sort(new_path)
             else:
                 self._moveFileToDir(path, file_name)
-
-    def sort_files(self, path: str):
-
+                
+    def count_elements(self, path: str) -> int:
+        count_file = 0
+        for file in os.listdir(path):
+            full_name = os.path.join(path, file)
+            if os.path.isfile(full_name):
+                count_file += 1
+            elif os.path.isdir(full_name):
+                count_file += self.count_elements(full_name)
+                
+        return count_file
+    
+    def check_api_key(self):
         try:
             self.service_API.check_api_key()
         except RequestError as error:
             self.__log.addLog(error.__str__())
-            return
+            raise error
 
+    def valid_path(self, path):
         if path == "" or path == None:
             self.__log.addLog("You forgot to set a path")
-            return
+            raise OSError
+
+    def sort_files(self, path: str):
+        self.check_api_key()
+        self.valid_path(path)
         
         path = path.replace("/", "\\")
         self.root_dir = path
