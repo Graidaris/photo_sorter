@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         self.pushButton_Start.setFlat(True)
         self.pushButton_Start.setObjectName("pushButton_Start")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(10, 60, 117, 68))
+        self.layoutWidget.setGeometry(QtCore.QRect(10, 60, 117, 90))
         self.layoutWidget.setObjectName("layoutWidget")
         self.options_layout = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.options_layout.setContentsMargins(0, 0, 0, 0)
