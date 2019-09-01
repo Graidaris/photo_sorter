@@ -72,9 +72,9 @@ class MainWindow(QMainWindow):
         sort_by_date = self.ui.checkBox_byDate.isChecked()
         sort_subdir = self.ui.checkBox_scanSubDir.isChecked()
         del_trash = False
-        
-        self.sorter.setOptions(sort_by_city, sort_by_date,
-                               sort_subdir, del_trash)
+
+        self.sorter.setOptions(sort_by_city, sort_by_date, sort_subdir,
+                               del_trash)
 
     def openDialog(self):
         self.ui.openFileNameDialog()
@@ -117,12 +117,12 @@ class MainWindow(QMainWindow):
             self.ui.pushButton_Start.show()
             self.ui.pushButton_Stop.hide()
             self.ui.progressBar.hide()
-        
+
     def updateProgressBar(self):
         current_value = self.ui.progressBar.value()
         self.ui.progressBar.setValue(current_value + 1)
 
-    def addLog(self, text):        
+    def addLog(self, text):
         self.ui.plainTextEdit_logi.insertPlainText(text + '\n')
 
     def startSort(self):
@@ -141,10 +141,6 @@ class MainWindow(QMainWindow):
             except PathNotSetException as error:
                 self.addLog(error)
             except RequestError as error:
-                """
-                Here error
-                TypeError: SortThread.signal_log[str].emit(): argument 1 has unexpected type 'RequestError'
-                """
                 self.addLog(error)
 
     def stopSort(self):

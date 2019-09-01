@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import pyqtSignal, QThread
-from sorter import Sorter, RequestError
+from sorter import PhSorter, RequestError
 
 class Log:
     def __init__(self, signal):
         self.signal = signal
 
     def addLog(self, text):
-        self.signal.emit(text)        
-    
-        
+        self.signal.emit(text)
+
+
 class PathNotSetException(Exception):
     pass
 
@@ -21,7 +21,7 @@ class SortThread(QThread):
 
     def __init__(self):
         QThread.__init__(self)
-        self.__sorter = Sorter()        
+        self.__sorter = PhSorter()
         self.loger = Log(self.signal_log)
         self.__sorter.setLog(self.loger)
         self.path = None
@@ -44,7 +44,7 @@ class SortThread(QThread):
 
     def setPath(self, path: str):
         self.path = path
-        
+
     def sendProgress(self):
         self.signal_count_elements.emit()
 

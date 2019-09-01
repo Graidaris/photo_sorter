@@ -11,7 +11,7 @@ from sorter.log import Log
 from sorter.service import ServiceAPI, RequestError
 
 
-class Sorter:
+class PhSorter:
     def __init__(self):
         self.__log = Log()
         self.stoped = False
@@ -25,7 +25,7 @@ class Sorter:
 
     def setKeyAPI(self, key):
         self.service_API.set_api_key(key)
-        
+
     def setProgressMon(self, func):
         """
         Set a function for monitoring the progress
@@ -63,7 +63,11 @@ class Sorter:
             full_name = os.path.join(path, element)
             if os.path.isdir(full_name):
                 self.delete_trash(full_name)
-        self.delete_folder(path) 
+        self.delete_folder(path)
+
+    def progressUpdate(self):
+        if self.progressMon is not None:
+            self.progressMon()
 
     def createDir(self, target_dir, name):
         if name is not None:
@@ -89,7 +93,7 @@ class Sorter:
             self.__log.addLog(f"Type error {full_name}")
 
     def _moveFileToDir(self, path, file_name):
-        full_name = join(path, file_name)        
+        full_name = join(path, file_name)
         try:
             self._update_photo_info(full_name)
         except SortError:
@@ -99,17 +103,13 @@ class Sorter:
         target_dir = self.createDir(target_dir, self.service_API.get_country())
 
         if self.sort_by_city:
-            target_dir = self.createDir(target_dir, self.service_API.get_city())
+            target_dir = self.createDir(target_dir,
+                                        self.service_API.get_city())
 
         target_dir = join(target_dir, file_name)
         os.rename(full_name, target_dir)
         self.__log.addLog(full_name + " has changed the name to " + target_dir)
-        
 
-    def progressUpdate(self):
-        if self.progressMon is not None:
-            self.progressMon()
-    
     def _sort(self, path):
         for file_name in os.listdir(path):
             if self.stoped:
@@ -122,10 +122,15 @@ class Sorter:
             if object_is_dir and self.sort_subdir:
                 new_path = os.path.join(path, file_name)
                 self._sort(new_path)
-            else:                
+            else:
                 self._moveFileToDir(path, file_name)
                 self.progressUpdate()
-    
+
+    def valid_path(self, path):
+        if path == "" or path == None:
+            self.__log.addLog("You forgot to set a path")
+            raise OSError("Error: The path is invalid")
+
     def check_api_key(self):
         try:
             self.service_API.check_api_key()
@@ -133,15 +138,10 @@ class Sorter:
             self.__log.addLog(error.__str__())
             raise error
 
-    def valid_path(self, path):
-        if path == "" or path == None:
-            self.__log.addLog("You forgot to set a path")
-            raise OSError
-
     def sort_files(self, path: str):
         self.check_api_key()
         self.valid_path(path)
-        
+
         path = path.replace("/", "\\")
         self.root_dir = path
         self.stoped = False
