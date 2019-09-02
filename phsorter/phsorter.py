@@ -5,10 +5,10 @@ from os.path import join
 import requests
 import time
 
-from sorter.sort_exeption import SortError
-from sorter.extractor import ExtractorExif, NotPhotoType, HasntGPSData
-from sorter.log import Log
-from sorter.service import ServiceAPI, RequestError
+from phsorter.sort_exeption import SortError
+from phsorter.extractor import ExtractorExif, NotPhotoType, HasntGPSData
+from phsorter.log import Log
+from phsorter.service import ServiceAPI, RequestError
 
 
 class PhSorter:
@@ -86,7 +86,7 @@ class PhSorter:
             self.__log.addLog(f"{full_name} hasnt GPS data")
             raise SortError
         except NotPhotoType:
-            self.__log.addLog(f"File {full_name} is not a photo")
+            self.__log.addLog(f"File {full_name} has an unsupported format")
             raise SortError
         except TypeError:
             raise SortError

@@ -7,7 +7,7 @@ from PySide2.QtCore import QFile
 from interface.main_window import Ui_MainWindow
 from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal
 
-from sorter import getAmountElements
+from phsorter import getAmountElements
 from sort_thread import SortThread, RequestError, PathNotSetException
 from session import Session
 

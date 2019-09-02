@@ -2,8 +2,8 @@
 
 import PIL.Image
 import PIL.ExifTags
-from sorter.extractor.gps_exception import HasntGPSData
-from sorter.extractor.type_exception import NotPhotoType
+from phsorter.extractor.gps_exception import HasntGPSData
+from phsorter.extractor.type_exception import NotPhotoType
 
 class ExtractorExif:
     def __init__(self, name_file):

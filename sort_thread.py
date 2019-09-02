@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtCore import pyqtSignal, QThread
-from sorter import PhSorter, RequestError
+from phsorter import PhSorter, RequestError
 
 class Log:
     def __init__(self, signal):

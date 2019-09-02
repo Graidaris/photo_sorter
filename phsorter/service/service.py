@@ -3,8 +3,8 @@
 import requests
 import time
 import json
-from sorter.service.param_exception import ParamNotFound
-from sorter.service.request_exception import RequestError
+from phsorter.service.param_exception import ParamNotFound
+from phsorter.service.request_exception import RequestError
 
 
 class ServiceAPI:

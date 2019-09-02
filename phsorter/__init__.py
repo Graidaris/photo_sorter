@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from sorter.sorter import PhSorter, RequestError
+from phsorter.phsorter import PhSorter, RequestError
 
 
 def getAmountElements(path: str) -> int:
