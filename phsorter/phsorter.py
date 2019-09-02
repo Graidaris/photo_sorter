@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from os.path import join
 import requests
 import time
 
@@ -71,7 +70,7 @@ class PhSorter:
 
     def createDir(self, target_dir, name):
         if name is not None:
-            target_dir = join(target_dir, name)
+            target_dir = os.path.join(target_dir, name)
             if not os.path.exists(target_dir):
                 os.mkdir(target_dir)
         return target_dir
@@ -93,7 +92,7 @@ class PhSorter:
             self.__log.addLog(f"Type error {full_name}")
 
     def _moveFileToDir(self, path, file_name):
-        full_name = join(path, file_name)
+        full_name = os.path.join(path, file_name)
         try:
             self._update_photo_info(full_name)
         except SortError:
@@ -106,7 +105,7 @@ class PhSorter:
             target_dir = self.createDir(target_dir,
                                         self.service_API.get_city())
 
-        target_dir = join(target_dir, file_name)
+        target_dir = os.path.join(target_dir, file_name)
         os.rename(full_name, target_dir)
         self.__log.addLog(full_name + " has changed the name to " + target_dir)
 
