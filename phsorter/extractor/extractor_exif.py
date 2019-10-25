@@ -92,15 +92,21 @@ class ExtractorExif:
 
     def get_date(self):
         """
-        Returns the date, when the photo was created
+        Returns the date, when the photo was created.
+        Keys: year, month, day, hour, minute, second.
         """
-        date, time = self.__exif['DateTimeOriginal'].split(' ')
-        date, time = date.split(':'), time.split(':')
-        return {
-            'year': date[0],
-            'month': date[1],
-            'day': date[2],
-            'hour': time[0],
-            'minute': time[1],
-            'second': time[2]
-        }
+        try:
+            date, time = self.__exif['DateTimeOriginal'].split(' ')
+            date, time = date.split(':'), time.split(':')
+            result = {
+                    'year': date[0],
+                    'month': date[1],
+                    'day': date[2],
+                    'hour': time[0],
+                    'minute': time[1],
+                    'second': time[2]
+                    }
+        except KeyError:
+            raise KeyError("The photo has no date information")
+        
+        return 

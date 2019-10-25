@@ -33,11 +33,11 @@ class SortThread(QThread):
         self.__sorter.stop()
         self.wait()
         
-    def setOptions(self, city = False, date = False, subdirectories = False, del_trash = False):
+    def setOptions(self, country = False, city = False, date = False, subdirectories = False, del_trash = False):
         """
         Set options, mean sort by ...
         """
-        self.__sorter.setOptions(city, date, subdirectories, del_trash)
+        self.__sorter.setOptions(country, city, date, subdirectories, del_trash)
 
     def setApiKey(self, key: str):
         self.__sorter.setKeyAPI(key)

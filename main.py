@@ -68,10 +68,11 @@ class MainWindow(QMainWindow):
             self.addLog(ex)
 
     def checkOptions(self):
+        sort_by_country = self.ui.checkBox_byCountry.isChecked()
         sort_by_city = self.ui.checkBox_byCity.isChecked()
         sort_by_date = self.ui.checkBox_byDate.isChecked()
         sort_subdir = self.ui.checkBox_scanSubDir.isChecked()
-        del_trash = False
+        del_trash = self.ui.checkBox_delTrash.isChecked()
 
         self.sorter.setOptions(sort_by_city, sort_by_date, sort_subdir,
                                del_trash)

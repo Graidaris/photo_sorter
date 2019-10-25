@@ -13,7 +13,9 @@ from phsorter.service import ServiceAPI, RequestError
 class PhSorter:
     def __init__(self):
         self.__log = Log()
+        self.current_photo_info = None
         self.stoped = False
+        self.sort_by_country = False
         self.sort_by_city = False
         self.sort_by_date = False
         self.sort_subdir = False  #subd is subdirection
@@ -38,11 +40,13 @@ class PhSorter:
         self.stoped = True
 
     def setOptions(self,
+                   sort_by_country=False,
                    sort_by_city=False,
                    sort_by_date=False,
                    sort_by_subd=False,
                    delete_trash=False):
 
+        self.sort_by_country = sort_by_country
         self.sort_by_city = sort_by_city
         self.sort_by_date = sort_by_date
         self.sort_subdir = sort_by_subd
@@ -68,19 +72,34 @@ class PhSorter:
         if self.progressMon is not None:
             self.progressMon()
 
-    def createDir(self, target_dir, name):
+    def createDir(self, target_dir, name) -> str:
+        """
+        Creates a new directory and return new full path of the directory 
+        """
         if name is not None:
             target_dir = os.path.join(target_dir, name)
             if not os.path.exists(target_dir):
                 os.mkdir(target_dir)
         return target_dir
+    
+    
 
     def _update_photo_info(self, full_name):
         try:
             photo_exif_info = ExtractorExif(full_name)
-            coord = photo_exif_info.get_coordinates()
-            self.service_API.update_data(coord['lat'], coord['lon'])
-
+            self.current_photo_info = {}
+            
+            if self.sort_by_city or self.sort_by_country:
+                coord = photo_exif_info.get_coordinates()
+                self.service_API.update_data(coord['lat'], coord['lon'])
+            
+                if self.sort_by_country:
+                    self.current_photo_info['country'] = self.service_API.get_country()
+                if self.sort_by_city:
+                    self.current_photo_info['city'] = self.service_API.get_city()
+            if self.sort_by_date:
+                self.current_photo_info['date'] = photo_exif_info.get_date()            
+            
         except HasntGPSData:
             self.__log.addLog(f"{full_name} hasnt GPS data")
             raise SortError
@@ -88,8 +107,11 @@ class PhSorter:
             self.__log.addLog(f"File {full_name} has an unsupported format")
             raise SortError
         except TypeError:
-            raise SortError
             self.__log.addLog(f"Type error {full_name}")
+            raise SortError
+        except KeyError as error:
+            self.__log.addLog(str(error))
+            raise SortError
 
     def _moveFileToDir(self, path, file_name):
         full_name = os.path.join(path, file_name)
@@ -99,11 +121,19 @@ class PhSorter:
             return
 
         target_dir = self.root_dir
-        target_dir = self.createDir(target_dir, self.service_API.get_country())
+        
+        if self.current_photo_info.get('country'):
+            target_dir = self.createDir(target_dir, self.current_photo_info.get('country'))
 
-        if self.sort_by_city:
-            target_dir = self.createDir(target_dir,
-                                        self.service_API.get_city())
+        if self.current_photo_info.get('city'):
+            target_dir = self.createDir(target_dir, self.current_photo_info.get('city'))
+
+        if self.current_photo_info.get('date'):
+            date_photo = self.current_photo_info.get('date')
+            new_dir_name = (str(date_photo['year']) + '-' +
+                            str(date_photo['month']) + '-' +
+                            str(date_photo['day']))
+            target_dir = self.createDir(target_dir, new_dir_name)
 
         target_dir = os.path.join(target_dir, file_name)
         os.rename(full_name, target_dir)

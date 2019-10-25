@@ -56,6 +56,11 @@ class Ui_MainWindow(object):
         self.checkBox_byCity = QtWidgets.QCheckBox(self.layoutWidget)
         self.checkBox_byCity.setObjectName("checkBox_byCity")
         self.options_layout.addWidget(self.checkBox_byCity)
+        
+        self.checkBox_byCountry = QtWidgets.QCheckBox(self.layoutWidget)
+        self.checkBox_byCountry.setObjectName("checkBox_byCountry")
+        self.options_layout.addWidget(self.checkBox_byCountry)
+        
         self.checkBox_byDate = QtWidgets.QCheckBox(self.layoutWidget)
         self.checkBox_byDate.setObjectName("checkBox_byDate")
         self.options_layout.addWidget(self.checkBox_byDate)
@@ -127,6 +132,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "Photo sorter", None, -1))
         self.pushButton_Start.setText(QtWidgets.QApplication.translate("MainWindow", "START", None, -1))
         self.checkBox_byCity.setText(QtWidgets.QApplication.translate("MainWindow", "sort by city", None, -1))
+        self.checkBox_byCountry.setText(QtWidgets.QApplication.translate("MainWindow", "sort by country", None, -1))
         self.checkBox_saveSession.setText(QtWidgets.QApplication.translate("MainWindow", "save session", None, -1))
         self.checkBox_delTrash.setText(QtWidgets.QApplication.translate("MainWindow", "delete trash", None, -1))
         self.checkBox_byDate.setText(QtWidgets.QApplication.translate("MainWindow", "sort by date", None, -1))
